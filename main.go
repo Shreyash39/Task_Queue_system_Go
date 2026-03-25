@@ -1,5 +1,6 @@
-package main
+package main //main package that run thes go program, it is the entry point of the application
 
+//importing the external packages and the one we made in the project
 import (
 	"fmt"
 	"jobqueue/internal/queue"
