@@ -2,32 +2,39 @@ package main //main package that run thes go program, it is the entry point of t
 
 //importing the external packages and the one we made in the project
 import (
-	"fmt"
+	"strconv"
+	"time"
+	
 	"jobqueue/internal/queue"
 	"jobqueue/internal/task"
+	"jobqueue/internal/worker"
 )
 
 func main() {
 	q := &queue.Queue{}
 
-	// Create sample task
-	t := task.Task{
-		ID:     "1",
-		Type:   "email",
-		Data:   "Send welcome email",
-		Status: task.Pending,
+	// Create worker
+	w := worker.Worker{
+		ID:    1,
+		Queue: q,
 	}
 
-	// Add to queue
-	q.Enqueue(t)
+	// 🔥 Start worker in background
+	go w.Start()
 
-	fmt.Println("Task added to queue")
+	// Add tasks
+	for i := 1; i <= 5; i++ {
+		t := task.Task{
+			ID:     strconv.Itoa(i),
+			Type:   "email",
+			Data:   "Send email",
+			Status: task.Pending,
+		}
 
-	// Remove from queue
-	taskOut, ok := q.Dequeue()
-	if ok {
-		fmt.Println("Dequeued Task:", taskOut)
-	} else {
-		fmt.Println("Queue is empty")
+		// Add to queue
+		q.Enqueue(t)
 	}
+
+	// Keep program alive
+	time.Sleep(10 * time.Second)
 }
